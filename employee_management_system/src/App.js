@@ -1,6 +1,11 @@
 import "./App.css";
 import React from "react";
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Link,
+  Redirect,
+} from "react-router-dom";
 import { PrivateRoute } from "./_components/PrivateRoute";
 import { history } from "./_helpers/history";
 import { Role } from "./_helpers/role";
@@ -30,6 +35,12 @@ function App() {
   return (
     <Router history={history}>
       <div>
+        {!currentUser && (
+          <Redirect
+            to={{ pathname: "/login", state: { from: history.location } }}
+          />
+        )}
+
         {currentUser && (
           <nav className="navbar navbar-expand navbar-dark bg-dark">
             <div className="navbar-nav">
@@ -46,25 +57,50 @@ function App() {
             </div>
           </nav>
         )}
-        {currentUser && currentUser.role === "User" && (
-          <div>
-            <HRPage />
-          </div>
-        )}
 
-        {currentUser && currentUser.role === "Admin" && (
-          <div>
-            <AdminPage />
-          </div>
-        )}
+        <Route
+          exact
+          path={"/"}
+          user={currentUser}
+          component={function HomePage() {
+            const user = authenticationService.currentUserValue;
 
+            if (!user) {
+              return (
+                <Redirect
+                  to={{ pathname: "/login", state: { from: history.location } }}
+                />
+              );
+            }
+            if (user.role === Role.User) {
+              return (
+                <Redirect
+                  to={{ pathname: "/hr", state: { from: history.location } }}
+                />
+              );
+            }
+
+            if (user.role === Role.Admin) {
+              return (
+                <Redirect
+                  to={{
+                    pathname: "/admin",
+                    state: { from: history.location },
+                  }}
+                />
+              );
+            }
+            return <div></div>;
+          }}
+        />
         <PrivateRoute
           path="/admin"
           roles={[Role.Admin]}
           component={AdminPage}
         />
-        <Route path="/login" component={LoginPage} />
-        <PrivateRoute path="/hr" roles={[Role.Admin]} component={HRPage} />
+
+        <PrivateRoute path="/hr" roles={[Role.User]} component={HRPage} />
+        <Route path={["/login"]} component={LoginPage} />
       </div>
     </Router>
   );

@@ -19,23 +19,19 @@ import { Search as SearchIcon } from "react-feather";
 
 import AddIcon from "@material-ui/icons/Add";
 import { useHistory } from "react-router";
+import { grey } from "@material-ui/core/colors";
 
 // Generate Order Data
-function createData(id, fname, sname, dob, department, hourlyRate) {
-  return { id, fname, sname, dob, department, hourlyRate };
+function createData(id, depTitle, numEmployees) {
+  return { id, depTitle, numEmployees };
 }
 
 const rows = [
-  createData(0, "Aymen", "Mohammednur", "18 Feb 2000", "Software", "50"),
-  createData(1, "Abenezer", "Sleshi", "01 March 1999", "Software", "45"),
-  createData(2, "Bethelhem", "Teshibelay", "02 May 2000", "Software", "40"),
-  createData(3, "Semere", "Terefe", "18 June 2000", "Software", "35"),
-  createData(4, "Semere", "Habtu", "10 June 2000", "Software", "30"),
-  createData(5, "Mohammednur", "Aymen", "18 Feb 2000", "Software", "50"),
-  createData(6, "Sleshi", "Abenezer", "01 March 1999", "Software", "45"),
-  createData(7, "Teshibelay", "Bethelhem", "02 May 2000", "Software", "40"),
-  createData(8, "Tereffe", "Semere", "18 June 2000", "Software", "35"),
-  createData(9, "Habtu", "Semere", "10 June 2000", "Software", "30"),
+  createData(0, "Software", "10"),
+  createData(1, "Testing", "5"),
+  createData(2, "Quality Assurance", "5"),
+  createData(3, "Marketing", "10"),
+  createData(4, "Sales", "8"),
 ];
 
 const useStyles = makeStyles((theme) => ({
@@ -49,6 +45,15 @@ const useStyles = makeStyles((theme) => ({
   },
   grow: {
     flexGrow: 1,
+  },
+  tableHead: {
+    backgroundColor: "#343a40",
+  },
+  wholeTable: {
+    marginTop: "1.5rem",
+  },
+  white: {
+    color: "white !important",
   },
 }));
 
@@ -66,9 +71,8 @@ export default function Departments() {
     setFilteredRows(
       rows.filter(
         (row) =>
-          row.fname.toLowerCase().includes(val) ||
-          row.sname.toLowerCase().includes(val) ||
-          (row.fname + " " + row.sname).toLowerCase().includes(val)
+          row.depTitle.toLowerCase().includes(val) ||
+          row.numEmployees.toLowerCase().includes(val)
       )
     );
   }
@@ -126,28 +130,18 @@ export default function Departments() {
         />
       </Box>
 
-      <Table size="small">
-        <TableHead>
+      <Table className={classes.wholeTable} size="small">
+        <TableHead className={classes.tableHead}>
           <TableRow>
-            <TableCell>Profile</TableCell>
-            <TableCell>Frist Name</TableCell>
-            <TableCell>Second Name</TableCell>
-            <TableCell>Date of Birth</TableCell>
-            <TableCell>Department</TableCell>
-            <TableCell>Hourly Rate</TableCell>
+            <TableCell className={classes.white}>Department Title</TableCell>
+            <TableCell className={classes.white}>Number of Employees</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {filteredRows.slice(page * limit, page * limit + limit).map((row) => (
             <TableRow key={row.id} onClick={() => openDetail(row, "Save")}>
-              <TableCell>
-                <Avatar>{row.fname.charAt(0)}</Avatar>
-              </TableCell>
-              <TableCell>{row.fname}</TableCell>
-              <TableCell>{row.sname}</TableCell>
-              <TableCell>{row.dob}</TableCell>
-              <TableCell>{row.department}</TableCell>
-              <TableCell>{row.hourlyRate}</TableCell>
+              <TableCell>{row.depTitle}</TableCell>
+              <TableCell>{row.numEmployees}</TableCell>
             </TableRow>
           ))}
         </TableBody>

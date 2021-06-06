@@ -10,11 +10,13 @@ import LibraryAddCheckIcon from "@material-ui/icons/LibraryAddCheck";
 import GroupIcon from "@material-ui/icons/Group";
 import PaymentIcon from "@material-ui/icons/Payment";
 import BusinessIcon from "@material-ui/icons/Business";
-import AccountBoxIcon from "@material-ui/icons/AccountBox";
+import PlusOneIcon from "@material-ui/icons/PlusOne";
 import Employees from "./employees/Employees";
 import Employee from "./employees/Employee";
 import Department from "./department/Department";
 import Departments from "./department/Departments";
+import Attendance from "./attendance/Attendances";
+import BonusCuts from "./bonus_cuts/BonusCuts";
 
 const useStyles = makeStyles((theme) => ({
   link: {
@@ -25,6 +27,7 @@ const useStyles = makeStyles((theme) => ({
 
 function HRPage() {
   const classes = useStyles();
+  console.log("lets render hr");
   return (
     <Router>
       <Layout
@@ -43,7 +46,12 @@ function HRPage() {
             <Route exact path="/department">
               <Department />
             </Route>
-            <Route exact path="/attendance"></Route>
+            <Route exact path="/attendance">
+              <Attendance />
+            </Route>
+            <Route exact path="/bonus_cuts">
+              <BonusCuts />
+            </Route>
             <Route exact path="/payment"></Route>
             <Route exact path="/account"></Route>
           </Switch>
@@ -74,20 +82,21 @@ function HRPage() {
                 <ListItemText primary="Attendance" />
               </ListItem>
             </Link>
+
+            <Link to="/bonus_cuts" className={classes.link}>
+              <ListItem button>
+                <ListItemIcon>
+                  <PlusOneIcon />
+                </ListItemIcon>
+                <ListItemText primary="Bonus Cuts" />
+              </ListItem>
+            </Link>
             <Link to="/payment" className={classes.link}>
               <ListItem button>
                 <ListItemIcon>
                   <PaymentIcon />
                 </ListItemIcon>
                 <ListItemText primary="Salary" />
-              </ListItem>
-            </Link>
-            <Link to="/account" className={classes.link}>
-              <ListItem button>
-                <ListItemIcon>
-                  <AccountBoxIcon />
-                </ListItemIcon>
-                <ListItemText primary="Account" />
               </ListItem>
             </Link>
           </div>

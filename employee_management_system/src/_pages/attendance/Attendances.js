@@ -1,10 +1,9 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
-import TextField from "@material-ui/core/TextField";
-import { Button } from "@material-ui/core";
+import { Autocomplete, Button } from "@material-ui/core";
 import { useHistory, useLocation } from "react-router-dom";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
@@ -63,26 +62,51 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const FORM_VALIDATION = Yup.object().shape({
-  departmentTitle: Yup.string()
-    .required("Required")
-    .min(3, "department title should at least be greater than 3 characters"),
-  numEmployees: Yup.number()
+  employeeId: Yup.string().required("Required"),
+  hoursWorked: Yup.number()
     .typeError("Must be a positive number")
     .required("Required")
-    .positive("Number of employees must be positive"),
+    .positive("Hourly Rate must be positive"),
 });
-export default function Department(props) {
+
+export default function Attendance(props) {
   const classes = useStyles();
   const history = useHistory();
-  const location = useLocation();
-
-  console.log(location.state.key);
-  const department = location.state.key;
 
   const INITIAL_FROM_STATE = {
-    departmentTitle: department.depTitle,
-    numEmployees: department.numEmployees,
+    employeeId: "",
+    hoursWorked: 0,
   };
+
+  const employees = [
+    {
+      id: "12342",
+      first_name: "Abebe",
+      last_name: "kebede",
+      email: "abebe.kebede",
+      date_of_birth: "12/12/2000",
+      hourly_rate: "50",
+      department_id: "1324",
+    },
+    {
+      id: "1232342",
+      first_name: "Kebedech",
+      last_name: "Abebech",
+      email: "kebedech.abebech",
+      date_of_birth: "12/12/2000",
+      hourly_rate: "60",
+      department_id: "12341",
+    },
+    {
+      id: "1212342",
+      first_name: "Beso",
+      last_name: "Bela",
+      email: "Beso.bela",
+      date_of_birth: "12/12/2000",
+      hourly_rate: "20",
+      department_id: "13423",
+    },
+  ];
 
   const handleOnClick = useCallback(() => history.push("/users"), [history]);
 
@@ -92,7 +116,7 @@ export default function Department(props) {
         <Paper className={classes.paper}>
           <React.Fragment>
             <Typography variant="h6" gutterBottom>
-              Department Detail
+              Record Employee worked hours
             </Typography>
             <Formik
               initialValues={{ ...INITIAL_FROM_STATE }}
@@ -104,23 +128,38 @@ export default function Department(props) {
               <Form>
                 <Grid container spacing={3}>
                   <Grid item xs={12} sm={6}>
-                    <TextFieldWrapper
-                      required
-                      id="departmentTitle"
-                      name="departmentTitle"
-                      label="Department Title"
-                      fullWidth
-                      autoComplete="department-title"
+                    <Autocomplete
+                      id="combo-box-demo"
+                      options={employees}
+                      getOptionLabel={(option) =>
+                        option.id +
+                        "-" +
+                        option.first_name +
+                        " " +
+                        option.last_name
+                      }
+                      style={{ width: 300 }}
+                      renderInput={(params) => (
+                        <TextFieldWrapper
+                          {...params}
+                          required
+                          id="employeeId"
+                          name="employeeId"
+                          label="Employee Id"
+                          fullWidth
+                          autoComplete="employee-id"
+                        />
+                      )}
                     />
                   </Grid>
                   <Grid item xs={12} sm={6}>
                     <TextFieldWrapper
                       required
-                      id="numEmployees"
-                      name="numEmployees"
-                      label="Number of Employees"
+                      id="hoursWorked"
+                      name="hoursWorked"
+                      label="Hours Worked"
                       fullWidth
-                      autoComplete="num-employees"
+                      autoComplete="Hours-Worked"
                     />
                   </Grid>
                   <Grid item xs={2}>
@@ -128,10 +167,12 @@ export default function Department(props) {
                       <div className={classes.buttons}>
                         <Button
                           color="secondary"
-                          onClick={handleOnClick}
+                          onClick={() => {
+                            history.push("/");
+                          }}
                           className={classes.button}
                         >
-                          Delete
+                          Cancel
                         </Button>
                         <ButtonWrapper
                           variant="contained"
@@ -139,7 +180,7 @@ export default function Department(props) {
                           // onClick={handleOnClick}
                           className={classes.button}
                         >
-                          {department.action}
+                          Add
                         </ButtonWrapper>
                       </div>
                     </React.Fragment>

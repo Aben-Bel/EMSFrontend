@@ -1,17 +1,15 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
-import TextField from "@material-ui/core/TextField";
-import { Button } from "@material-ui/core";
+import { Autocomplete, Button } from "@material-ui/core";
 import { useHistory, useLocation } from "react-router-dom";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import moment from "moment";
-
-import TextFieldWrapper from "../../_components/FormsUI/TextFieldWrapper";
 import ButtonWrapper from "../../_components/FormsUI/ButtonWrapper";
+import TextFieldWrapper from "../../_components/FormsUI/TextFieldWrapper";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -65,52 +63,71 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const FORM_VALIDATION = Yup.object().shape({
-  firstName: Yup.string()
-    .required("Required")
-    .test("Name", "Name shouldn't contain a number", (val) => {
-      return !/\d/.test(val);
-    }),
-  lastName: Yup.string()
-    .required("Required")
-    .test("Name", "Name shouldn't contain a number", (val) => {
-      return !/\d/.test(val);
-    }),
-  department: Yup.string().required("Required"),
-  hourlyRate: Yup.number()
+  employeeId: Yup.string().required("Required"),
+  amount: Yup.number()
     .typeError("Must be a positive number")
     .required("Required")
     .positive("Hourly Rate must be positive"),
-  dob: Yup.date("Not a date")
-    .required("Required")
-    .test("Date of Birth", "You have to be above 18 at least", (value) => {
-      return moment().diff(moment(value), "years") >= 18;
-    }),
+  date: Yup.date()
+    .typeError("It must be a date")
+    .test("Date", "Only date after today are accepted ", (value) => {
+      return moment(new Date(value)).isAfter(
+        moment().utc(new Date()).format("L")
+      );
+    })
+    .required("Required"),
+  remark: Yup.string().min(30).max(200).required("required"),
+  type: Yup.string().required("Required"),
 });
-
-export default function Employee(props) {
+export default function BonusCuts(props) {
   const classes = useStyles();
   const history = useHistory();
-  const location = useLocation();
-
-  console.log(location.state.key);
-  const employee = location.state.key;
-
-  const handleOnClick = useCallback(() => history.push("/users"), [history]);
 
   const INITIAL_FROM_STATE = {
-    firstName: employee.fname,
-    lastName: employee.sname,
-    dob: employee.dob,
-    department: employee.department,
-    hourlyRate: employee.hourlyRate,
+    employeeId: "",
+    date: moment.utc(new Date()).format("L"),
+    amount: 0.0,
+    remark: " ",
+    type: "bonus",
   };
+
+  const employees = [
+    {
+      id: "12342",
+      first_name: "Abebe",
+      last_name: "kebede",
+      email: "abebe.kebede",
+      date_of_birth: "12/12/2000",
+      hourly_rate: "50",
+      department_id: "1324",
+    },
+    {
+      id: "1232342",
+      first_name: "Kebedech",
+      last_name: "Abebech",
+      email: "kebedech.abebech",
+      date_of_birth: "12/12/2000",
+      hourly_rate: "60",
+      department_id: "12341",
+    },
+    {
+      id: "1212342",
+      first_name: "Beso",
+      last_name: "Bela",
+      email: "Beso.bela",
+      date_of_birth: "12/12/2000",
+      hourly_rate: "20",
+      department_id: "13423",
+    },
+  ];
+
   return (
     <React.Fragment>
       <main className={classes.layout}>
         <Paper className={classes.paper}>
           <React.Fragment>
             <Typography variant="h6" gutterBottom>
-              Employee Detail
+              Record Employee worked hours
             </Typography>
             <Formik
               initialValues={{ ...INITIAL_FROM_STATE }}
@@ -122,64 +139,91 @@ export default function Employee(props) {
               <Form>
                 <Grid container spacing={3}>
                   <Grid item xs={12} sm={6}>
-                    <TextFieldWrapper
-                      required
-                      id="firstName"
-                      name="firstName"
-                      label="First name"
-                      fullWidth
-                      autoComplete="given-name"
+                    <Autocomplete
+                      id="combo-box-demo"
+                      options={employees}
+                      getOptionLabel={(option) =>
+                        option.id +
+                        "-" +
+                        option.first_name +
+                        " " +
+                        option.last_name
+                      }
+                      style={{ width: 300 }}
+                      renderInput={(params) => (
+                        <TextFieldWrapper
+                          {...params}
+                          required
+                          id="employeeId"
+                          name="employeeId"
+                          label="Employee Id"
+                          fullWidth
+                          autoComplete="employee-id"
+                        />
+                      )}
                     />
                   </Grid>
                   <Grid item xs={12} sm={6}>
                     <TextFieldWrapper
                       required
-                      id="lastName"
-                      name="lastName"
-                      label="Last name"
+                      id="amount"
+                      name="amount"
+                      label="Hours Worked"
                       fullWidth
-                      autoComplete="family-name"
+                      autoComplete="amount-Worked"
                     />
                   </Grid>
                   <Grid item xs={12} sm={6}>
                     <TextFieldWrapper
                       required
-                      id="dob"
-                      name="dob"
-                      label="Date of birth"
+                      id="date"
+                      name="date"
+                      label="Date bonus"
                       fullWidth
+                      placeholder="DD-MM-YYYY"
+                      autoComplete="date-Worked"
                     />
                   </Grid>
                   <Grid item xs={12} sm={6}>
                     <TextFieldWrapper
                       required
-                      id="department"
-                      name="department"
-                      label="Department"
+                      id="remark"
+                      name="remark"
+                      label="Remarks"
                       fullWidth
-                      autoComplete="department"
+                      autoComplete="remark"
                     />
                   </Grid>
-                  <Grid item xs={12}>
-                    <TextFieldWrapper
-                      required
-                      id="hourlyRate"
-                      name="hourlyRate"
-                      label="Hourly Rate"
-                      fullWidth
-                      autoComplete="HourlyRate"
+                  <Grid item xs={12} sm={6}>
+                    <Autocomplete
+                      id="combo-box-demo"
+                      options={["bonus", "cuts"]}
+                      getOptionLabel={(option) => option}
+                      style={{ width: 300 }}
+                      renderInput={(params) => (
+                        <TextFieldWrapper
+                          {...params}
+                          required
+                          id="type"
+                          name="type"
+                          label="Type(Bonus/Cuts)"
+                          fullWidth
+                          autoComplete="type"
+                        />
+                      )}
                     />
                   </Grid>
-
                   <Grid item xs={2}>
                     <React.Fragment>
                       <div className={classes.buttons}>
                         <Button
                           color="secondary"
-                          onClick={() => history.push("/")}
+                          onClick={() => {
+                            history.push("/");
+                          }}
                           className={classes.button}
                         >
-                          Delete
+                          Cancel
                         </Button>
                         <ButtonWrapper
                           variant="contained"
@@ -187,7 +231,7 @@ export default function Employee(props) {
                           // onClick={handleOnClick}
                           className={classes.button}
                         >
-                          {employee.action}
+                          Add
                         </ButtonWrapper>
                       </div>
                     </React.Fragment>

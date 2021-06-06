@@ -50,6 +50,13 @@ const useStyles = makeStyles((theme) => ({
   grow: {
     flexGrow: 1,
   },
+  white: {
+    backgroundColor: "black",
+    color: "white !important",
+  },
+  wholeTable: {
+    marginTop: "1.5rem",
+  },
 }));
 
 export default function Employees() {
@@ -126,15 +133,15 @@ export default function Employees() {
         />
       </Box>
 
-      <Table size="small">
+      <Table size="small" className={classes.wholeTable}>
         <TableHead>
           <TableRow>
-            <TableCell>Profile</TableCell>
-            <TableCell>Frist Name</TableCell>
-            <TableCell>Second Name</TableCell>
-            <TableCell>Date of Birth</TableCell>
-            <TableCell>Department</TableCell>
-            <TableCell>Hourly Rate</TableCell>
+            <TableCell className={classes.white}>Profile</TableCell>
+            <TableCell className={classes.white}>Frist Name</TableCell>
+            <TableCell className={classes.white}>Second Name</TableCell>
+            <TableCell className={classes.white}>Date of Birth</TableCell>
+            <TableCell className={classes.white}>Department</TableCell>
+            <TableCell className={classes.white}>Hourly Rate</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
