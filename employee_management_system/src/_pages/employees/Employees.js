@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -19,24 +19,25 @@ import { Search as SearchIcon } from "react-feather";
 
 import AddIcon from "@material-ui/icons/Add";
 import { useHistory } from "react-router";
+import { dataService } from "../../_services/data.service";
 
 // Generate Order Data
-function createData(id, fname, sname, dob, department, hourlyRate) {
-  return { id, fname, sname, dob, department, hourlyRate };
-}
+// function createData(id, fname, sname, dob, department, hourlyRate) {
+//   return { id, fname, sname, dob, department, hourlyRate };
+// }
 
-const rows = [
-  createData(0, "Aymen", "Mohammednur", "18 Feb 2000", "Software", "50"),
-  createData(1, "Abenezer", "Sleshi", "01 March 1999", "Software", "45"),
-  createData(2, "Bethelhem", "Teshibelay", "02 May 2000", "Software", "40"),
-  createData(3, "Semere", "Terefe", "18 June 2000", "Software", "35"),
-  createData(4, "Semere", "Habtu", "10 June 2000", "Software", "30"),
-  createData(5, "Mohammednur", "Aymen", "18 Feb 2000", "Software", "50"),
-  createData(6, "Sleshi", "Abenezer", "01 March 1999", "Software", "45"),
-  createData(7, "Teshibelay", "Bethelhem", "02 May 2000", "Software", "40"),
-  createData(8, "Tereffe", "Semere", "18 June 2000", "Software", "35"),
-  createData(9, "Habtu", "Semere", "10 June 2000", "Software", "30"),
-];
+// const rows = [
+//   createData(0, "Aymen", "Mohammednur", "18 Feb 2000", "Software", "50"),
+//   createData(1, "Abenezer", "Sleshi", "01 March 1999", "Software", "45"),
+//   createData(2, "Bethelhem", "Teshibelay", "02 May 2000", "Software", "40"),
+//   createData(3, "Semere", "Terefe", "18 June 2000", "Software", "35"),
+//   createData(4, "Semere", "Habtu", "10 June 2000", "Software", "30"),
+//   createData(5, "Mohammednur", "Aymen", "18 Feb 2000", "Software", "50"),
+//   createData(6, "Sleshi", "Abenezer", "01 March 1999", "Software", "45"),
+//   createData(7, "Teshibelay", "Bethelhem", "02 May 2000", "Software", "40"),
+//   createData(8, "Tereffe", "Semere", "18 June 2000", "Software", "35"),
+//   createData(9, "Habtu", "Semere", "10 June 2000", "Software", "30"),
+// ];
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -62,10 +63,19 @@ const useStyles = makeStyles((theme) => ({
 export default function Employees() {
   const classes = useStyles();
 
+  const [rows, setRows] = useState([]);
   const [filteredRows, setFilteredRows] = useState(rows);
   const history = useHistory();
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
+
+  useEffect(() => {
+    dataService.getEmployees().then((data) => {
+      setRows(data);
+      setFilteredRows(data);
+      console.log("employees:: ", data);
+    });
+  }, []);
 
   function filter(e) {
     e.preventDefault();
@@ -73,9 +83,9 @@ export default function Employees() {
     setFilteredRows(
       rows.filter(
         (row) =>
-          row.fname.toLowerCase().includes(val) ||
-          row.sname.toLowerCase().includes(val) ||
-          (row.fname + " " + row.sname).toLowerCase().includes(val)
+          row.first_name.toLowerCase().includes(val) ||
+          row.last_name.toLowerCase().includes(val) ||
+          (row.first_name + " " + row.last_name).toLowerCase().includes(val)
       )
     );
   }
@@ -148,13 +158,13 @@ export default function Employees() {
           {filteredRows.slice(page * limit, page * limit + limit).map((row) => (
             <TableRow key={row.id} onClick={() => openDetail(row, "Save")}>
               <TableCell>
-                <Avatar>{row.fname.charAt(0)}</Avatar>
+                <Avatar>{row.first_name.charAt(0)}</Avatar>
               </TableCell>
-              <TableCell>{row.fname}</TableCell>
-              <TableCell>{row.sname}</TableCell>
-              <TableCell>{row.dob}</TableCell>
-              <TableCell>{row.department}</TableCell>
-              <TableCell>{row.hourlyRate}</TableCell>
+              <TableCell>{row.first_name}</TableCell>
+              <TableCell>{row.last_name}</TableCell>
+              <TableCell>{row.date_of_birth}</TableCell>
+              <TableCell>{row.department_title}</TableCell>
+              <TableCell>{row.hourly_rate}</TableCell>
             </TableRow>
           ))}
         </TableBody>

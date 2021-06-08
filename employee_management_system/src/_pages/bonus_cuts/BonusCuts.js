@@ -136,108 +136,125 @@ export default function BonusCuts(props) {
                 console.log(values);
               }}
             >
-              <Form>
-                <Grid container spacing={3}>
-                  <Grid item xs={12} sm={6}>
-                    <Autocomplete
-                      id="combo-box-demo"
-                      options={employees}
-                      getOptionLabel={(option) =>
-                        option.id +
-                        "-" +
-                        option.first_name +
-                        " " +
-                        option.last_name
-                      }
-                      style={{ width: 300 }}
-                      renderInput={(params) => (
-                        <TextFieldWrapper
-                          {...params}
-                          required
-                          id="employeeId"
-                          name="employeeId"
-                          label="Employee Id"
-                          fullWidth
-                          autoComplete="employee-id"
-                        />
-                      )}
-                    />
+              {({ setFieldValue }) => (
+                <Form>
+                  <Grid container spacing={3}>
+                    <Grid item xs={12} sm={6}>
+                      <Autocomplete
+                        id="combo-box-demo"
+                        name="employeeId"
+                        options={employees}
+                        getOptionLabel={(option) =>
+                          option.id +
+                          "-" +
+                          option.first_name +
+                          " " +
+                          option.last_name
+                        }
+                        onChange={(e, value) => {
+                          value =
+                            value.id +
+                            "-" +
+                            value.first_name +
+                            " " +
+                            value.lastname;
+                          setFieldValue(
+                            "employeeId",
+                            value !== null
+                              ? value
+                              : INITIAL_FROM_STATE.employeeId
+                          );
+                        }}
+                        style={{ width: 300 }}
+                        renderInput={(params) => (
+                          <TextFieldWrapper
+                            {...params}
+                            required
+                            id="employeeId"
+                            name="employeeId"
+                            label="Employee Id"
+                            fullWidth
+                            autoComplete="employee-id"
+                          />
+                        )}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <TextFieldWrapper
+                        required
+                        id="amount"
+                        name="amount"
+                        label="Hours Worked"
+                        fullWidth
+                        autoComplete="amount-Worked"
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <TextFieldWrapper
+                        required
+                        id="date"
+                        name="date"
+                        label="Date bonus"
+                        fullWidth
+                        placeholder="DD-MM-YYYY"
+                        autoComplete="date-Worked"
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <TextFieldWrapper
+                        required
+                        id="remark"
+                        name="remark"
+                        label="Remarks"
+                        fullWidth
+                        autoComplete="remark"
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <Autocomplete
+                        id="combo-box-demo"
+                        options={["bonus", "cuts"]}
+                        getOptionLabel={(option) => option}
+                        style={{ width: 300 }}
+                        renderInput={(params) => (
+                          <TextFieldWrapper
+                            {...params}
+                            required
+                            id="type"
+                            name="type"
+                            label="Type(Bonus/Cuts)"
+                            fullWidth
+                            autoComplete="type"
+                          />
+                        )}
+                      />
+                    </Grid>
+                    <Grid item xs={2}>
+                      <React.Fragment>
+                        <div className={classes.buttons}>
+                          <Button
+                            color="secondary"
+                            onClick={() => {
+                              history.push("/");
+                            }}
+                            className={classes.button}
+                          >
+                            Cancel
+                          </Button>
+                          <ButtonWrapper
+                            variant="contained"
+                            color="primary"
+                            // onClick={handleOnClick}
+                            className={classes.button}
+                          >
+                            Add
+                          </ButtonWrapper>
+                        </div>
+                      </React.Fragment>
+                    </Grid>
                   </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <TextFieldWrapper
-                      required
-                      id="amount"
-                      name="amount"
-                      label="Hours Worked"
-                      fullWidth
-                      autoComplete="amount-Worked"
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <TextFieldWrapper
-                      required
-                      id="date"
-                      name="date"
-                      label="Date bonus"
-                      fullWidth
-                      placeholder="DD-MM-YYYY"
-                      autoComplete="date-Worked"
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <TextFieldWrapper
-                      required
-                      id="remark"
-                      name="remark"
-                      label="Remarks"
-                      fullWidth
-                      autoComplete="remark"
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <Autocomplete
-                      id="combo-box-demo"
-                      options={["bonus", "cuts"]}
-                      getOptionLabel={(option) => option}
-                      style={{ width: 300 }}
-                      renderInput={(params) => (
-                        <TextFieldWrapper
-                          {...params}
-                          required
-                          id="type"
-                          name="type"
-                          label="Type(Bonus/Cuts)"
-                          fullWidth
-                          autoComplete="type"
-                        />
-                      )}
-                    />
-                  </Grid>
-                  <Grid item xs={2}>
-                    <React.Fragment>
-                      <div className={classes.buttons}>
-                        <Button
-                          color="secondary"
-                          onClick={() => {
-                            history.push("/");
-                          }}
-                          className={classes.button}
-                        >
-                          Cancel
-                        </Button>
-                        <ButtonWrapper
-                          variant="contained"
-                          color="primary"
-                          // onClick={handleOnClick}
-                          className={classes.button}
-                        >
-                          Add
-                        </ButtonWrapper>
-                      </div>
-                    </React.Fragment>
-                  </Grid>
-                </Grid>
-              </Form>
+                </Form>
+              )}
             </Formik>
           </React.Fragment>
         </Paper>

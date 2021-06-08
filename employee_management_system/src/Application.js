@@ -12,36 +12,27 @@ import { Role } from "./_helpers/role";
 import { AdminPage } from "./_pages/AdminPage";
 import { LoginPage } from "./_pages/LoginPage";
 import { HRPage } from "./_pages/HRPage";
-import { authenticationService } from "./_services/authentication.service";
+import { useAuthDispatch, useAuthState } from "./_context/context";
+import { logout } from "./_context/action";
 
-import { configureFakeBackend } from "./_helpers/fake-backend";
-// configureFakeBackend();
+function Application() {
+  const userDetails = useAuthState();
+  const dispath = useAuthDispatch();
 
-function App() {
-  const [currentUser, setCurrentUser] = React.useState(null);
-  const [isAdmin, setIsAdmin] = React.useState(false);
-
-  React.useEffect(() => {
-    authenticationService.currentUser.subscribe((x) => {
-      setCurrentUser(x);
-      setIsAdmin(x && x.role === Role.Admin);
-    });
-  });
-
-  function logout() {
-    authenticationService.logout();
+  function logoutHandler() {
+    logout(dispath);
   }
 
   return (
     <Router history={history}>
       <div>
-        {!currentUser && (
+        {!userDetails.user && (
           <Redirect
             to={{ pathname: "/login", state: { from: history.location } }}
           />
         )}
 
-        {currentUser && (
+        {userDetails.user && (
           <nav className="navbar navbar-expand navbar-dark bg-dark">
             <div className="navbar-nav">
               <Link to="/" className="nav-item nav-link">
@@ -49,7 +40,7 @@ function App() {
               </Link>
               <Link
                 to="/login"
-                onClick={logout}
+                onClick={logoutHandler}
                 className="nav-item nav-link rightalign"
               >
                 Logout
@@ -61,10 +52,9 @@ function App() {
         <Route
           exact
           path={"/"}
-          user={currentUser}
           component={function HomePage() {
-            const user = authenticationService.currentUserValue;
-
+            const user = userDetails.user;
+            console.log("User::: ", user, "userDetails: ", userDetails);
             if (!user) {
               return (
                 <Redirect
@@ -109,4 +99,4 @@ function App() {
   );
 }
 
-export default App;
+export default Application;

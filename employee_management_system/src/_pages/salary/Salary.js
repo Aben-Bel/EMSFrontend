@@ -1,14 +1,15 @@
-import React, { useCallback } from "react";
+import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import { Autocomplete, Button } from "@material-ui/core";
-import { useHistory, useLocation } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import ButtonWrapper from "../../_components/FormsUI/ButtonWrapper";
 import TextFieldWrapper from "../../_components/FormsUI/TextFieldWrapper";
+import moment from "moment";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -62,20 +63,16 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const FORM_VALIDATION = Yup.object().shape({
-  employeeId: Yup.string(),
-  hoursWorked: Yup.number()
-    .typeError("Must be a positive number")
-    .required("Required")
-    .positive("Hourly Rate must be positive"),
+  employeeId: Yup.string().required("Required"),
+  date: Yup.date().required("Required").typeError("It must be a date"),
 });
-
-export default function Attendance(props) {
+export default function Salary(props) {
   const classes = useStyles();
   const history = useHistory();
 
   const INITIAL_FROM_STATE = {
     employeeId: "",
-    hoursWorked: 0,
+    date: moment.utc(new Date()).format("L"),
   };
 
   const employees = [
@@ -108,8 +105,6 @@ export default function Attendance(props) {
     },
   ];
 
-  const handleOnClick = useCallback(() => history.push("/users"), [history]);
-
   return (
     <React.Fragment>
       <main className={classes.layout}>
@@ -130,7 +125,7 @@ export default function Attendance(props) {
                   <Grid container spacing={3}>
                     <Grid item xs={12} sm={6}>
                       <Autocomplete
-                        id="combo-box-demo"
+                        id="employeeId"
                         name="employeeId"
                         options={employees}
                         getOptionLabel={(option) =>
@@ -159,7 +154,7 @@ export default function Attendance(props) {
                           <TextFieldWrapper
                             {...params}
                             required
-                            id="employeeId"
+                            id="employeeTextId"
                             name="employeeId"
                             label="Employee Id"
                             fullWidth
@@ -171,35 +166,36 @@ export default function Attendance(props) {
                     <Grid item xs={12} sm={6}>
                       <TextFieldWrapper
                         required
-                        id="hoursWorked"
-                        name="hoursWorked"
-                        label="Hours Worked"
+                        id="date"
+                        name="date"
+                        label="Date Salary Given"
                         fullWidth
-                        autoComplete="Hours-Worked"
+                        placeholder="DD-MM-YYYY"
+                        autoComplete="date-Worked"
                       />
                     </Grid>
-                    <Grid item xs={2}>
-                      <React.Fragment>
-                        <div className={classes.buttons}>
-                          <Button
-                            color="secondary"
-                            onClick={() => {
-                              history.push("/");
-                            }}
-                            className={classes.button}
-                          >
-                            Cancel
-                          </Button>
-                          <ButtonWrapper
-                            variant="contained"
-                            color="primary"
-                            // onClick={handleOnClick}
-                            className={classes.button}
-                          >
-                            Add
-                          </ButtonWrapper>
-                        </div>
-                      </React.Fragment>
+                    <Grid item xs={4} sm={3}>
+                      <div className={classes.buttons}>
+                        <Button
+                          color="secondary"
+                          onClick={() => {
+                            history.push("/");
+                          }}
+                          className={classes.button}
+                        >
+                          Cancel
+                        </Button>
+                        <ButtonWrapper
+                          variant="contained"
+                          color="primary"
+                          onClick={() => {
+                            console.log("was clicked cal");
+                          }}
+                          className={classes.button}
+                        >
+                          Calculate Salary
+                        </ButtonWrapper>
+                      </div>
                     </Grid>
                   </Grid>
                 </Form>

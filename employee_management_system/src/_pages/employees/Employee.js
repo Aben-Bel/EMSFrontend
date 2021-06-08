@@ -98,11 +98,11 @@ export default function Employee(props) {
   const handleOnClick = useCallback(() => history.push("/users"), [history]);
 
   const INITIAL_FROM_STATE = {
-    firstName: employee.fname,
-    lastName: employee.sname,
-    dob: employee.dob,
-    department: employee.department,
-    hourlyRate: employee.hourlyRate,
+    firstName: employee.first_name,
+    lastName: employee.last_name,
+    dob: employee.date_of_birth,
+    department: employee.department_title,
+    hourlyRate: employee.hourly_rate,
   };
   return (
     <React.Fragment>

@@ -49,7 +49,8 @@ export function LoginPage(props) {
                 }
               );
             }}
-            render={({ errors, status, touched, isSubmitting }) => (
+          >
+            {(errors, touched, isSubmitting, status) => (
               <Form>
                 <div className="form-group">
                   <label htmlFor="username">Username</label>
@@ -98,7 +99,7 @@ export function LoginPage(props) {
                 {status && <div className={"alert alert-danger"}>{status}</div>}
               </Form>
             )}
-          />
+          </Formik>
         </div>
       </div>
     </div>

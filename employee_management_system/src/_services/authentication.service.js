@@ -1,6 +1,19 @@
 import { BehaviorSubject } from "rxjs";
+import axios from "axios";
 
 import { handleResponse } from "../_helpers/handle-response";
+
+const tokenSubject = new BehaviorSubject(
+  JSON.parse(localStorage.getItem("token"))
+);
+
+// const instance = axios.create({
+//   baseURL: "http://127.0.0.1:5000/",
+//   timeout: 1000,
+//   headers: {
+//     Authorization: `Bearer ${tokenSubject.value}`,
+//     Content-Type: application/json },
+// });
 
 const currentUserSubject = new BehaviorSubject(
   JSON.parse(localStorage.getItem("currentUser"))
@@ -16,21 +29,28 @@ export const authenticationService = {
 };
 
 function login(username, password) {
-  const requestOptions = {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username, password }),
-  };
+  // Send a POST request
+  axios({
+    method: "post",
+    auth: {
+      username,
+      password,
+    },
+    baseURL: "http://127.0.0.1:5000/",
+    url: "/login",
+  }).then((response) => {
+    response = response.data;
+    const user = {
+      username: response.username,
+      password: response.password,
+      token: response.token,
+    };
 
-  return fetch(`www.example.com/users/authenticate`, requestOptions)
-    .then(handleResponse)
-    .then((user) => {
-      // store user details and jwt token in local storage to keep user logged in between page refreshes
-      localStorage.setItem("currentUser", JSON.stringify(user));
-      currentUserSubject.next(user);
-
-      return user;
-    });
+    localStorage.setItem("currentUser", JSON.stringify(user));
+    currentUserSubject.next(user);
+    console.log("user: ", user);
+    return user;
+  });
 }
 
 function logout() {

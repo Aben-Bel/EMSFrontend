@@ -17,6 +17,7 @@ import Department from "./department/Department";
 import Departments from "./department/Departments";
 import Attendance from "./attendance/Attendances";
 import BonusCuts from "./bonus_cuts/BonusCuts";
+import Salary from "./salary/Salary";
 
 const useStyles = makeStyles((theme) => ({
   link: {
@@ -52,7 +53,9 @@ function HRPage() {
             <Route exact path="/bonus_cuts">
               <BonusCuts />
             </Route>
-            <Route exact path="/payment"></Route>
+            <Route exact path="/payment">
+              <Salary />
+            </Route>
             <Route exact path="/account"></Route>
           </Switch>
         }

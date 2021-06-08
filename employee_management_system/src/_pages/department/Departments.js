@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -20,19 +20,20 @@ import { Search as SearchIcon } from "react-feather";
 import AddIcon from "@material-ui/icons/Add";
 import { useHistory } from "react-router";
 import { grey } from "@material-ui/core/colors";
+import { dataService } from "../../_services/data.service";
 
 // Generate Order Data
 function createData(id, depTitle, numEmployees) {
   return { id, depTitle, numEmployees };
 }
 
-const rows = [
-  createData(0, "Software", "10"),
-  createData(1, "Testing", "5"),
-  createData(2, "Quality Assurance", "5"),
-  createData(3, "Marketing", "10"),
-  createData(4, "Sales", "8"),
-];
+// const rows = [
+//   createData(0, "Software", "10"),
+//   createData(1, "Testing", "5"),
+//   createData(2, "Quality Assurance", "5"),
+//   createData(3, "Marketing", "10"),
+//   createData(4, "Sales", "8"),
+// ];
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -60,11 +61,19 @@ const useStyles = makeStyles((theme) => ({
 export default function Departments() {
   const classes = useStyles();
 
+  const [rows, setRows] = useState([]);
   const [filteredRows, setFilteredRows] = useState(rows);
   const history = useHistory();
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
 
+  useEffect(() => {
+    dataService.getDepartments().then((data) => {
+      setRows(data);
+      setFilteredRows(data);
+      console.log("Departments: ", data);
+    });
+  }, []);
   function filter(e) {
     e.preventDefault();
     const val = e.target.value.toLowerCase();
