@@ -1,11 +1,11 @@
 import { authenticationService } from "./authentication.service";
 import axios from "axios";
-import React from "react";
-import { Role } from "../_helpers/role";
 
 export const dataService = {
   getEmployees,
   getDepartments,
+  addBonus,
+  addAttendance,
 };
 
 // let token =
@@ -69,7 +69,7 @@ function getSalary(employee_id) {
   });
 }
 function getDepartments() {
-  console.log(`SALARYYY\n\n\n${getBonusCuts()}`);
+  // console.log(`SALARYYY\n\n\n${getBonusCuts()}`);
   return axios({
     url: "/departments",
     method: "GET",
@@ -80,4 +80,43 @@ function getDepartments() {
   });
 }
 
+function addBonus(bonus) {
+  return axios({
+    url: "/bonus",
+    method: "POST",
+    headers: {
+      "x-access-token": authenticationService.currentUserValue.token,
+    },
+    data: {
+      employee_id: bonus.employeeId,
+      date: bonus.date,
+      amount: bonus.amount,
+      remark: bonus.remark,
+    },
+    ...config,
+  }).then((response) => {
+    return response;
+  });
+}
+
+function addAttendance(attendance) {
+  return axios({
+    url: "/attendance",
+    method: "POST",
+    headers: {
+      "x-access-token": authenticationService.currentUserValue.token,
+    },
+    data: {
+      employee_id: attendance.employeeId,
+      work_time: attendance.hoursWorked,
+      date: new Date(),
+    },
+    ...config,
+  }).then((response) => {
+    return response;
+  });
+}
+
 console.log("I AM IN DATA.SERVICE.JS");
+
+function test_bonuscuts() {}

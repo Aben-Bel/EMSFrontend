@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
@@ -10,6 +10,7 @@ import * as Yup from "yup";
 import ButtonWrapper from "../../_components/FormsUI/ButtonWrapper";
 import TextFieldWrapper from "../../_components/FormsUI/TextFieldWrapper";
 import moment from "moment";
+import { dataService } from "../../_services/data.service";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -69,41 +70,18 @@ const FORM_VALIDATION = Yup.object().shape({
 export default function Salary(props) {
   const classes = useStyles();
   const history = useHistory();
+  const [employees, setEmployees] = useState([]);
 
   const INITIAL_FROM_STATE = {
     employeeId: "",
     date: moment.utc(new Date()).format("L"),
   };
 
-  const employees = [
-    {
-      id: "12342",
-      first_name: "Abebe",
-      last_name: "kebede",
-      email: "abebe.kebede",
-      date_of_birth: "12/12/2000",
-      hourly_rate: "50",
-      department_id: "1324",
-    },
-    {
-      id: "1232342",
-      first_name: "Kebedech",
-      last_name: "Abebech",
-      email: "kebedech.abebech",
-      date_of_birth: "12/12/2000",
-      hourly_rate: "60",
-      department_id: "12341",
-    },
-    {
-      id: "1212342",
-      first_name: "Beso",
-      last_name: "Bela",
-      email: "Beso.bela",
-      date_of_birth: "12/12/2000",
-      hourly_rate: "20",
-      department_id: "13423",
-    },
-  ];
+  useEffect(() => {
+    dataService.getEmployees().then((data) => {
+      setEmployees(data);
+    });
+  }, []);
 
   return (
     <React.Fragment>

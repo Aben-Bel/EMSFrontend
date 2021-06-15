@@ -74,8 +74,10 @@ export default function Departments() {
       console.log("Departments: ", data);
     });
   }, []);
+
   function filter(e) {
     e.preventDefault();
+    console.log("query: ", e.target.value);
     const val = e.target.value.toLowerCase();
     setFilteredRows(
       rows.filter(
@@ -149,8 +151,8 @@ export default function Departments() {
         <TableBody>
           {filteredRows.slice(page * limit, page * limit + limit).map((row) => (
             <TableRow key={row.id} onClick={() => openDetail(row, "Save")}>
-              <TableCell>{row.depTitle}</TableCell>
-              <TableCell>{row.numEmployees}</TableCell>
+              <TableCell>{row.department_title}</TableCell>
+              <TableCell>{row.no_of_employees}</TableCell>
             </TableRow>
           ))}
         </TableBody>

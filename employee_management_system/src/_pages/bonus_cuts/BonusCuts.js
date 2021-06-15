@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
@@ -10,6 +10,8 @@ import * as Yup from "yup";
 import moment from "moment";
 import ButtonWrapper from "../../_components/FormsUI/ButtonWrapper";
 import TextFieldWrapper from "../../_components/FormsUI/TextFieldWrapper";
+import { dataService } from "../../_services/data.service";
+import { handleResponse } from "../../_helpers/handle-response";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -82,6 +84,7 @@ const FORM_VALIDATION = Yup.object().shape({
 export default function BonusCuts(props) {
   const classes = useStyles();
   const history = useHistory();
+  const [employees, setEmployees] = useState([]);
 
   const INITIAL_FROM_STATE = {
     employeeId: "",
@@ -91,35 +94,32 @@ export default function BonusCuts(props) {
     type: "bonus",
   };
 
-  const employees = [
-    {
-      id: "12342",
-      first_name: "Abebe",
-      last_name: "kebede",
-      email: "abebe.kebede",
-      date_of_birth: "12/12/2000",
-      hourly_rate: "50",
-      department_id: "1324",
-    },
-    {
-      id: "1232342",
-      first_name: "Kebedech",
-      last_name: "Abebech",
-      email: "kebedech.abebech",
-      date_of_birth: "12/12/2000",
-      hourly_rate: "60",
-      department_id: "12341",
-    },
-    {
-      id: "1212342",
-      first_name: "Beso",
-      last_name: "Bela",
-      email: "Beso.bela",
-      date_of_birth: "12/12/2000",
-      hourly_rate: "20",
-      department_id: "13423",
-    },
-  ];
+  useEffect(() => {
+    dataService.getEmployees().then((data) => {
+      setEmployees(data);
+    });
+  }, []);
+
+  function handleOnSubmit(value, setStatus) {
+    console.log("Bonus: ", value);
+    dataService
+      .addBonus(value)
+      .then((res) => {
+        console.log("response status: ", res);
+        if (res.status === 201) {
+          setStatus({
+            sent: true,
+            msg: "Sucessfully Added Bonus",
+          });
+        }
+      })
+      .catch((err) => {
+        setStatus({
+          sent: false,
+          msg: `${err}. Please try again later.`,
+        });
+      });
+  }
 
   return (
     <React.Fragment>
@@ -132,11 +132,15 @@ export default function BonusCuts(props) {
             <Formik
               initialValues={{ ...INITIAL_FROM_STATE }}
               validationSchema={FORM_VALIDATION}
-              onSubmit={(values) => {
-                console.log(values);
+              onSubmit={(values, { setStatus }) => {
+                setStatus({
+                  sent: false,
+                  msg: "Sending...",
+                });
+                handleOnSubmit(values, setStatus);
               }}
             >
-              {({ setFieldValue }) => (
+              {({ setFieldValue, status }) => (
                 <Form>
                   <Grid container spacing={3}>
                     <Grid item xs={12} sm={6}>
@@ -253,6 +257,15 @@ export default function BonusCuts(props) {
                       </React.Fragment>
                     </Grid>
                   </Grid>
+                  {status && status.msg && (
+                    <p
+                      className={`alert ${
+                        status.sent ? "alert-success" : "alert-error"
+                      }`}
+                    >
+                      {status.msg}
+                    </p>
+                  )}
                 </Form>
               )}
             </Formik>
