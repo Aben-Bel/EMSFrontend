@@ -63,7 +63,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const FORM_VALIDATION = Yup.object().shape({
-  employeeId: Yup.string(),
+  employeeId: Yup.string().required("Required"),
   hoursWorked: Yup.number()
     .typeError("Must be a positive number")
     .required("Required")

@@ -21,24 +21,6 @@ import AddIcon from "@material-ui/icons/Add";
 import { useHistory } from "react-router";
 import { dataService } from "../../_services/data.service";
 
-// Generate Order Data
-// function createData(id, fname, sname, dob, department, hourlyRate) {
-//   return { id, fname, sname, dob, department, hourlyRate };
-// }
-
-// const rows = [
-//   createData(0, "Aymen", "Mohammednur", "18 Feb 2000", "Software", "50"),
-//   createData(1, "Abenezer", "Sleshi", "01 March 1999", "Software", "45"),
-//   createData(2, "Bethelhem", "Teshibelay", "02 May 2000", "Software", "40"),
-//   createData(3, "Semere", "Terefe", "18 June 2000", "Software", "35"),
-//   createData(4, "Semere", "Habtu", "10 June 2000", "Software", "30"),
-//   createData(5, "Mohammednur", "Aymen", "18 Feb 2000", "Software", "50"),
-//   createData(6, "Sleshi", "Abenezer", "01 March 1999", "Software", "45"),
-//   createData(7, "Teshibelay", "Bethelhem", "02 May 2000", "Software", "40"),
-//   createData(8, "Tereffe", "Semere", "18 June 2000", "Software", "35"),
-//   createData(9, "Habtu", "Semere", "10 June 2000", "Software", "30"),
-// ];
-
 const useStyles = makeStyles((theme) => ({
   root: {
     "& > *": {

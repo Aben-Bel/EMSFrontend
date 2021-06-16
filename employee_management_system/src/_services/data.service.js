@@ -6,12 +6,9 @@ export const dataService = {
   getDepartments,
   addBonus,
   addAttendance,
+  addEmployee,
+  editEmployee,
 };
-
-// let token =
-//   (JSON.parse(localStorage.getItem("currentUser")) &&
-//     JSON.parse(localStorage.getItem("currentUser")).token) ||
-//   " ";
 
 axios.interceptors.response.use(
   function (response) {
@@ -21,12 +18,17 @@ axios.interceptors.response.use(
     // Do something with response error
     console.log("Error: ", error.response);
     try {
-      if (
-        error.response ||
-        error.response.data.message === "Token is invalid"
-      ) {
+      console.log("OK: ", error.response.ok);
+      if ([401, 403].indexOf(error.response.status) !== -1) {
+        // auto logout if 401 Unauthorized or 403 Forbidden response returned from api
         authenticationService.logout();
+        window.location.reload(true);
       }
+
+      const error =
+        (error.response && error.response.data.message) ||
+        error.response.statusText;
+      return Promise.reject(error);
     } catch {}
 
     return Promise.reject(error);
@@ -37,7 +39,7 @@ let config = {
   baseURL: "http://127.0.0.1:5000/",
 };
 
-function getEmployees(username, password) {
+function getEmployees() {
   return axios({
     url: "/employees",
     method: "GET",
@@ -47,6 +49,74 @@ function getEmployees(username, password) {
     return response.data;
   });
 }
+
+function editEmployee({
+  firstName,
+  lastName,
+  email,
+  dob,
+  department,
+  hourlyRate,
+  departmentId,
+  id,
+}) {
+  const value = {
+    first_name: firstName,
+    last_name: lastName,
+    email: email,
+    date_of_birth: dob,
+    department_title: department,
+    hourly_rate: hourlyRate,
+    department_id: departmentId,
+  };
+  console.log("value put emp::: ", value);
+  return axios({
+    url: `/employees/${id}`,
+    method: "PUT",
+    headers: { "x-access-token": authenticationService.currentUserValue.token },
+    data: {
+      first_name: firstName,
+      last_name: lastName,
+      email: email,
+      date_of_birth: dob,
+      department_title: department,
+      hourly_rate: hourlyRate,
+      department_id: departmentId,
+    },
+    ...config,
+  }).then((response) => {
+    return response;
+  });
+}
+
+function addEmployee({
+  firstName,
+  lastName,
+  email,
+  dob,
+  department,
+  hourlyRate,
+  departmentId,
+}) {
+  return axios({
+    url: "/employees",
+    method: "POST",
+    headers: { "x-access-token": authenticationService.currentUserValue.token },
+    data: {
+      first_name: firstName,
+      last_name: lastName,
+      email: email,
+      date_of_birth: dob,
+      department_title: department,
+      hourly_rate: hourlyRate,
+      department_id: departmentId,
+    },
+    ...config,
+  }).then((response) => {
+    return response;
+  });
+}
+
 function getBonusCuts() {
   // console.log(`SALARYYY\n\n\n${getSalary(34)}`)
   return axios({
