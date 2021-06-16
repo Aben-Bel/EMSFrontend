@@ -58,7 +58,7 @@ function getUsers() {
   });
 }
 
-function editUser({ username, password, id }) {
+function editUser({ username, password, role, id }) {
   return axios({
     url: `/managers/${id}`,
     method: "PUT",
@@ -66,7 +66,7 @@ function editUser({ username, password, id }) {
     data: {
       username,
       password,
-      user_role: "manager",
+      user_role: role,
     },
     ...config,
   }).then((response) => {

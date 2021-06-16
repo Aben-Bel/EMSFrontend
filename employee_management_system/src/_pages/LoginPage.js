@@ -34,9 +34,11 @@ export function LoginPage(props) {
               { setStatus, setSubmitting }
             ) => {
               setStatus();
+              setSubmitting(true);
               authenticationService.login(username, password).then(
                 (user) => {
                   console.log("user: ", user);
+                  setStatus({ msg: "Loggin in..." });
                   const { from } = props.location.state || {
                     from: { pathname: "/" },
                   };
