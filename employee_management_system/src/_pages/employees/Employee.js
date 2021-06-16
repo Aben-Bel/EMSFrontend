@@ -261,7 +261,11 @@ export default function Employee(props) {
                             onClick={() => history.push("/")}
                             className={classes.button}
                           >
-                            Delete
+                            {employee.action === "Save" ? (
+                              <span>Delete</span>
+                            ) : (
+                              <span>Cancle</span>
+                            )}
                           </Button>
                           <ButtonWrapper
                             variant="contained"

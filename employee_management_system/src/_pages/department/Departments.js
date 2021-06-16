@@ -22,19 +22,6 @@ import { useHistory } from "react-router";
 import { grey } from "@material-ui/core/colors";
 import { dataService } from "../../_services/data.service";
 
-// Generate Order Data
-function createData(id, depTitle, numEmployees) {
-  return { id, depTitle, numEmployees };
-}
-
-// const rows = [
-//   createData(0, "Software", "10"),
-//   createData(1, "Testing", "5"),
-//   createData(2, "Quality Assurance", "5"),
-//   createData(3, "Marketing", "10"),
-//   createData(4, "Sales", "8"),
-// ];
-
 const useStyles = makeStyles((theme) => ({
   root: {
     "& > *": {

@@ -46,13 +46,14 @@ export default function Employees() {
   const classes = useStyles();
 
   const [rows, setRows] = useState([]);
-  const [filteredRows, setFilteredRows] = useState(rows);
+  const [filteredRows, setFilteredRows] = useState([]);
   const history = useHistory();
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
 
   useEffect(() => {
     dataService.getEmployees().then((data) => {
+      console.log("EMPLOYEES:: ", data);
       setRows(data);
       setFilteredRows(data);
       console.log("employees:: ", data);

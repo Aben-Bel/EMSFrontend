@@ -70,6 +70,7 @@ const FORM_VALIDATION = Yup.object().shape({
 export default function Salary(props) {
   const classes = useStyles();
   const history = useHistory();
+  const [salary, setSalary] = useState(0);
   const [employees, setEmployees] = useState([]);
 
   const INITIAL_FROM_STATE = {
@@ -94,11 +95,34 @@ export default function Salary(props) {
             <Formik
               initialValues={{ ...INITIAL_FROM_STATE }}
               validationSchema={FORM_VALIDATION}
-              onSubmit={(values) => {
-                console.log(values);
+              onSubmit={(values, { setStatus }) => {
+                values.employeeId = values.employeeId.split("-")[0];
+                console.log("to calculate: ", values);
+                setStatus({
+                  sent: false,
+                  msg: "Sending...",
+                });
+                dataService
+                  .getSalary(values.employeeId)
+                  .then((res) => {
+                    console.log("response status: ", res);
+                    if (res.status === 201) {
+                      setStatus({
+                        sent: true,
+                        msg: "Salary Calculated.",
+                        body: `Gross: ${res.data.amount}\nBonus: ${res.data.bonus_cuts}\nNET: ${res.data.net}\nTaxed: ${res.data.tax} `,
+                      });
+                    }
+                  })
+                  .catch((err) => {
+                    setStatus({
+                      sent: false,
+                      msg: `${err}. Please try again later.`,
+                    });
+                  });
               }}
             >
-              {({ setFieldValue }) => (
+              {({ setFieldValue, status }) => (
                 <Form>
                   <Grid container spacing={3}>
                     <Grid item xs={12} sm={6}>
@@ -176,6 +200,24 @@ export default function Salary(props) {
                       </div>
                     </Grid>
                   </Grid>
+                  {status && status.msg && (
+                    <div>
+                      <p
+                        className={`alert ${
+                          status.sent ? "alert-success" : "alert-error"
+                        }`}
+                      >
+                        {status.msg}
+                      </p>
+                      <p
+                        className={`alert ${
+                          status.sent ? "alert-success" : "alert-error"
+                        }`}
+                      >
+                        {status.body}
+                      </p>
+                    </div>
+                  )}
                 </Form>
               )}
             </Formik>

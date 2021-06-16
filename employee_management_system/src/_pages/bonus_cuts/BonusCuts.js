@@ -69,7 +69,7 @@ const FORM_VALIDATION = Yup.object().shape({
   amount: Yup.number()
     .typeError("Must be a positive number")
     .required("Required")
-    .positive("Hourly Rate must be positive"),
+    .positive("Amount must be positive"),
   date: Yup.date()
     .typeError("It must be a date")
     .test("Date", "Only date after today are accepted ", (value) => {
@@ -79,7 +79,6 @@ const FORM_VALIDATION = Yup.object().shape({
     })
     .required("Required"),
   remark: Yup.string().min(30).max(200).required("required"),
-  type: Yup.string().required("Required"),
 });
 export default function BonusCuts(props) {
   const classes = useStyles();
@@ -101,7 +100,7 @@ export default function BonusCuts(props) {
   }, []);
 
   function handleOnSubmit(value, setStatus) {
-    console.log("Bonus: ", value);
+    value.employeeId = value.employeeId.split("-")[0];
     dataService
       .addBonus(value)
       .then((res) => {
@@ -188,7 +187,7 @@ export default function BonusCuts(props) {
                         required
                         id="amount"
                         name="amount"
-                        label="Hours Worked"
+                        label="Amount"
                         fullWidth
                         autoComplete="amount-Worked"
                       />
@@ -212,25 +211,6 @@ export default function BonusCuts(props) {
                         label="Remarks"
                         fullWidth
                         autoComplete="remark"
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <Autocomplete
-                        id="combo-box-demo"
-                        options={["bonus", "cuts"]}
-                        getOptionLabel={(option) => option}
-                        style={{ width: 300 }}
-                        renderInput={(params) => (
-                          <TextFieldWrapper
-                            {...params}
-                            required
-                            id="type"
-                            name="type"
-                            label="Type(Bonus/Cuts)"
-                            fullWidth
-                            autoComplete="type"
-                          />
-                        )}
                       />
                     </Grid>
                     <Grid item xs={2}>

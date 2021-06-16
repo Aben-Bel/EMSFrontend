@@ -8,6 +8,9 @@ export const dataService = {
   addAttendance,
   addEmployee,
   editEmployee,
+  addDepartment,
+  editDepartment,
+  getSalary,
 };
 
 axios.interceptors.response.use(
@@ -16,22 +19,21 @@ axios.interceptors.response.use(
   },
   function (error) {
     // Do something with response error
-    console.log("Error: ", error.response);
     try {
-      console.log("OK: ", error.response.ok);
+      console.log("Error: ", error.response);
+
+      console.log("OK: ", error.response.status);
       if ([401, 403].indexOf(error.response.status) !== -1) {
         // auto logout if 401 Unauthorized or 403 Forbidden response returned from api
         authenticationService.logout();
         window.location.reload(true);
       }
 
-      const error =
+      const err =
         (error.response && error.response.data.message) ||
         error.response.statusText;
-      return Promise.reject(error);
+      return Promise.reject(err);
     } catch {}
-
-    return Promise.reject(error);
   }
 );
 
@@ -117,25 +119,18 @@ function addEmployee({
   });
 }
 
-function getBonusCuts() {
-  // console.log(`SALARYYY\n\n\n${getSalary(34)}`)
+function addDepartment({ numEmployees, departmentTitle }) {
   return axios({
-    url: "/bonus_cuts",
-    method: "GET",
+    url: "/departments",
+    method: "POST",
     headers: { "x-access-token": authenticationService.currentUserValue.token },
+    data: {
+      no_of_employees: numEmployees,
+      department_title: departmentTitle,
+    },
     ...config,
   }).then((response) => {
-    console.log(response.data);
-  });
-}
-function getSalary(employee_id) {
-  return axios({
-    url: "/salary",
-    method: "GET",
-    headers: { "x-access-token": authenticationService.currentUserValue.token },
-    ...config,
-  }).then((response) => {
-    console.log(response.data);
+    return response;
   });
 }
 function getDepartments() {
@@ -147,6 +142,22 @@ function getDepartments() {
     ...config,
   }).then((response) => {
     return response.data;
+  });
+}
+
+function editDepartment({ numEmployees, id, departmentTitle }) {
+  console.log("value put id dep::: ", id);
+  return axios({
+    url: `/departments/${id}`,
+    method: "PUT",
+    headers: { "x-access-token": authenticationService.currentUserValue.token },
+    data: {
+      no_of_employees: numEmployees,
+      department_title: departmentTitle,
+    },
+    ...config,
+  }).then((response) => {
+    return response;
   });
 }
 
@@ -186,6 +197,29 @@ function addAttendance(attendance) {
     return response;
   });
 }
+
+function getSalary(employee_id) {
+  return axios({
+    url: `/salary/${employee_id}`,
+    method: "GET",
+    headers: { "x-access-token": authenticationService.currentUserValue.token },
+    ...config,
+  }).then((response) => {
+    return response;
+  });
+}
+
+// function getBonusCuts() {
+//   // console.log(`SALARYYY\n\n\n${getSalary(34)}`)
+//   return axios({
+//     url: "/bonus_cuts",
+//     method: "GET",
+//     headers: { "x-access-token": authenticationService.currentUserValue.token },
+//     ...config,
+//   }).then((response) => {
+//     console.log(response.data);
+//   });
+// }
 
 console.log("I AM IN DATA.SERVICE.JS");
 

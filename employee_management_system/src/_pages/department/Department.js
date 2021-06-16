@@ -10,6 +10,7 @@ import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import ButtonWrapper from "../../_components/FormsUI/ButtonWrapper";
 import TextFieldWrapper from "../../_components/FormsUI/TextFieldWrapper";
+import { dataService } from "../../_services/data.service";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -80,8 +81,8 @@ export default function Department(props) {
   const department = location.state.key;
 
   const INITIAL_FROM_STATE = {
-    departmentTitle: department.depTitle,
-    numEmployees: department.numEmployees,
+    departmentTitle: department.department_title,
+    numEmployees: department.no_of_employees,
   };
 
   const handleOnClick = useCallback(() => history.push("/users"), [history]);
@@ -97,55 +98,106 @@ export default function Department(props) {
             <Formik
               initialValues={{ ...INITIAL_FROM_STATE }}
               validationSchema={FORM_VALIDATION}
-              onSubmit={(values) => {
-                console.log(values);
+              onSubmit={(values, { setStatus }) => {
+                // console.log("values employee: ", values);
+                if (department.action === "Create") {
+                  dataService
+                    .addDepartment(values)
+                    .then((res) => {
+                      console.log("response status: ", res);
+                      if (res.status === 201) {
+                        setStatus({
+                          sent: true,
+                          msg: "Sucessfully Added Employee",
+                        });
+                      }
+                    })
+                    .catch((err) => {
+                      console.log("was here to report an error employee");
+                      setStatus({
+                        sent: false,
+                        msg: `${err}. Please try again later.`,
+                      });
+                    });
+                } else if (department.action === "Save") {
+                  values.id = department.id;
+                  dataService
+                    .editDepartment(values)
+                    .then((res) => {
+                      console.log("response status: ", res);
+                      if (res.status === 201) {
+                        setStatus({
+                          sent: true,
+                          msg: "Sucessfully Added Employee",
+                        });
+                      }
+                    })
+                    .catch((err) => {
+                      console.log("was here to report an error employee");
+                      setStatus({
+                        sent: false,
+                        msg: `${err}. Please try again later.`,
+                      });
+                    });
+                }
               }}
             >
-              <Form>
-                <Grid container spacing={3}>
-                  <Grid item xs={12} sm={6}>
-                    <TextFieldWrapper
-                      required
-                      id="departmentTitle"
-                      name="departmentTitle"
-                      label="Department Title"
-                      fullWidth
-                      autoComplete="department-title"
-                    />
+              {({ status }) => (
+                <Form>
+                  <Grid container spacing={3}>
+                    <Grid item xs={12} sm={6}>
+                      <TextFieldWrapper
+                        required
+                        id="departmentTitle"
+                        name="departmentTitle"
+                        label="Department Title"
+                        fullWidth
+                        autoComplete="department-title"
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <TextFieldWrapper
+                        required
+                        id="numEmployees"
+                        name="numEmployees"
+                        label="Number of Employees"
+                        fullWidth
+                        autoComplete="num-employees"
+                      />
+                    </Grid>
+                    <Grid item xs={2}>
+                      <React.Fragment>
+                        <div className={classes.buttons}>
+                          <Button
+                            color="secondary"
+                            onClick={handleOnClick}
+                            className={classes.button}
+                          >
+                            Delete
+                          </Button>
+                          <ButtonWrapper
+                            variant="contained"
+                            color="primary"
+                            // onClick={handleOnClick}
+                            className={classes.button}
+                          >
+                            {department.action}
+                          </ButtonWrapper>
+                        </div>
+                      </React.Fragment>
+                    </Grid>
                   </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <TextFieldWrapper
-                      required
-                      id="numEmployees"
-                      name="numEmployees"
-                      label="Number of Employees"
-                      fullWidth
-                      autoComplete="num-employees"
-                    />
-                  </Grid>
-                  <Grid item xs={2}>
-                    <React.Fragment>
-                      <div className={classes.buttons}>
-                        <Button
-                          color="secondary"
-                          onClick={handleOnClick}
-                          className={classes.button}
-                        >
-                          Delete
-                        </Button>
-                        <ButtonWrapper
-                          variant="contained"
-                          color="primary"
-                          // onClick={handleOnClick}
-                          className={classes.button}
-                        >
-                          {department.action}
-                        </ButtonWrapper>
-                      </div>
-                    </React.Fragment>
-                  </Grid>
-                </Grid>
-              </Form>
+                  {status && status.msg && (
+                    <p
+                      className={`alert ${
+                        status.sent ? "alert-success" : "alert-error"
+                      }`}
+                    >
+                      {status.msg}
+                    </p>
+                  )}
+                </Form>
+              )}
             </Formik>
           </React.Fragment>
         </Paper>

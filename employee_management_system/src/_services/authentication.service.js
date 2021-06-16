@@ -39,6 +39,7 @@ function login(username, password) {
     baseURL: "http://127.0.0.1:5000/",
     url: "/login",
   }).then((response) => {
+    console.log("response login: ", response);
     response = response.data;
     const user = {
       username: response.username,
