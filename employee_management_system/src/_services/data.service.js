@@ -11,6 +11,8 @@ export const dataService = {
   addDepartment,
   editDepartment,
   getSalary,
+  deleteEmployee,
+  deleteDepartment,
 };
 
 axios.interceptors.response.use(
@@ -119,6 +121,17 @@ function addEmployee({
   });
 }
 
+function deleteEmployee(employeeID) {
+  return axios({
+    url: `/employees/${employeeID}`,
+    method: "DELETE",
+    headers: { "x-access-token": authenticationService.currentUserValue.token },
+    ...config,
+  }).then((response) => {
+    return response;
+  });
+}
+
 function addDepartment({ numEmployees, departmentTitle }) {
   return axios({
     url: "/departments",
@@ -155,6 +168,17 @@ function editDepartment({ numEmployees, id, departmentTitle }) {
       no_of_employees: numEmployees,
       department_title: departmentTitle,
     },
+    ...config,
+  }).then((response) => {
+    return response;
+  });
+}
+
+function deleteDepartment(depId) {
+  return axios({
+    url: `/departments/${depId}`,
+    method: "DELETE",
+    headers: { "x-access-token": authenticationService.currentUserValue.token },
     ...config,
   }).then((response) => {
     return response;

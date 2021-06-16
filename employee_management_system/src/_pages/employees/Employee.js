@@ -4,7 +4,7 @@ import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
-import { Button, Autocomplete } from "@material-ui/core";
+import { Button, Autocomplete, Modal } from "@material-ui/core";
 import { useHistory, useLocation } from "react-router-dom";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
@@ -93,8 +93,8 @@ export default function Employee(props) {
   const history = useHistory();
   const location = useLocation();
   const [departments, setDepartments] = useState([]);
+  const [open, setOpen] = useState(false);
 
-  console.log(location.state.key);
   const employee = location.state.key;
 
   const INITIAL_FROM_STATE = {
@@ -105,6 +105,18 @@ export default function Employee(props) {
     department: employee.department_title,
     hourlyRate: employee.hourly_rate,
     email: employee.email,
+  };
+
+  const handleDelete = () => {
+    if (employee.action === "Save") {
+      dataService
+        .deleteEmployee(employee.id)
+        .then((res) => {
+          console.log("Deleted: ", res);
+          history.push("/employees");
+        })
+        .catch((error) => {});
+    }
   };
 
   useEffect(() => {
@@ -255,17 +267,28 @@ export default function Employee(props) {
 
                     <Grid item xs={2}>
                       <React.Fragment>
+                        {employee.action === "Save" ? (
+                          <Button
+                            color="secondary"
+                            onClick={() => {
+                              setOpen(true);
+                            }}
+                            className={classes.button}
+                          >
+                            Delete
+                          </Button>
+                        ) : (
+                          <span></span>
+                        )}
                         <div className={classes.buttons}>
                           <Button
                             color="secondary"
-                            onClick={() => history.push("/")}
+                            onClick={() => {
+                              history.push("/employees");
+                            }}
                             className={classes.button}
                           >
-                            {employee.action === "Save" ? (
-                              <span>Delete</span>
-                            ) : (
-                              <span>Cancle</span>
-                            )}
+                            <span>Cancel</span>
                           </Button>
                           <ButtonWrapper
                             variant="contained"
@@ -294,6 +317,53 @@ export default function Employee(props) {
             </Formik>
           </React.Fragment>
         </Paper>
+        <Modal
+          open={open}
+          onClose={() => {
+            setOpen(false);
+          }}
+          aria-labelledby="simple-modal-title"
+          aria-describedby="simple-modal-description"
+        >
+          <div
+            style={{
+              position: "absolute",
+              top: `40%`,
+              left: `40%`,
+              background: "#c1d3f0",
+              width: "400",
+              border: "1px solid #000",
+              boxShadow: "3",
+              padding: "2, 4, 3",
+            }}
+            className={classes.paper}
+          >
+            <h2 id="simple-modal-title">Warning!</h2>
+            <p id="simple-modal-description">
+              Are you sure? You are about to remove an employee.
+            </p>
+            <Button
+              color="secondary"
+              onClick={() => {
+                setOpen(false);
+                history.push("/employees");
+                handleDelete();
+              }}
+              className={classes.button}
+            >
+              Delete
+            </Button>
+            <Button
+              color="secondary"
+              onClick={() => {
+                setOpen(false);
+              }}
+              className={classes.button}
+            >
+              Cancel
+            </Button>
+          </div>
+        </Modal>
       </main>
     </React.Fragment>
   );

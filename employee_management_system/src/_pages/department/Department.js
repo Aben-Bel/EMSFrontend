@@ -4,7 +4,7 @@ import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
-import { Button } from "@material-ui/core";
+import { Button, Modal } from "@material-ui/core";
 import { useHistory, useLocation } from "react-router-dom";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
@@ -76,6 +76,7 @@ export default function Department(props) {
   const classes = useStyles();
   const history = useHistory();
   const location = useLocation();
+  const [open, setOpen] = useState(false);
 
   console.log(location.state.key);
   const department = location.state.key;
@@ -84,9 +85,17 @@ export default function Department(props) {
     departmentTitle: department.department_title,
     numEmployees: department.no_of_employees,
   };
-
-  const handleOnClick = useCallback(() => history.push("/users"), [history]);
-
+  const handleDelete = () => {
+    if (department.action === "Save") {
+      dataService
+        .deleteDepartment(department.id)
+        .then((res) => {
+          console.log("Deleted: ", res);
+          history.push("/departments");
+        })
+        .catch((error) => {});
+    }
+  };
   return (
     <React.Fragment>
       <main className={classes.layout}>
@@ -167,18 +176,34 @@ export default function Department(props) {
                     </Grid>
                     <Grid item xs={2}>
                       <React.Fragment>
-                        <div className={classes.buttons}>
+                        {department.action === "Save" ? (
                           <Button
                             color="secondary"
-                            onClick={handleOnClick}
+                            onClick={() => {
+                              setOpen(true);
+                            }}
                             className={classes.button}
                           >
                             Delete
                           </Button>
+                        ) : (
+                          <span></span>
+                        )}
+                        <div className={classes.buttons}>
+                          <Button
+                            color="secondary"
+                            onClick={() => {
+                              history.push("/departments");
+                            }}
+                            className={classes.button}
+                          >
+                            <span>Cancel</span>
+                          </Button>
                           <ButtonWrapper
                             variant="contained"
                             color="primary"
-                            // onClick={handleOnClick}
+                            type="submit"
+                            // onClick={console.log("was clicked employee")}
                             className={classes.button}
                           >
                             {department.action}
@@ -201,6 +226,53 @@ export default function Department(props) {
             </Formik>
           </React.Fragment>
         </Paper>
+        <Modal
+          open={open}
+          onClose={() => {
+            setOpen(false);
+          }}
+          aria-labelledby="simple-modal-title"
+          aria-describedby="simple-modal-description"
+        >
+          <div
+            style={{
+              position: "absolute",
+              top: `40%`,
+              left: `40%`,
+              background: "#c1d3f0",
+              width: "400",
+              border: "1px solid #000",
+              boxShadow: "3",
+              padding: "2, 4, 3",
+            }}
+            className={classes.paper}
+          >
+            <h2 id="simple-modal-title">Warning!</h2>
+            <p id="simple-modal-description">
+              Are you sure? You are about to remove a department.
+            </p>
+            <Button
+              color="secondary"
+              onClick={() => {
+                setOpen(false);
+                history.push("/departments");
+                handleDelete();
+              }}
+              className={classes.button}
+            >
+              Delete
+            </Button>
+            <Button
+              color="secondary"
+              onClick={() => {
+                setOpen(false);
+              }}
+              className={classes.button}
+            >
+              Cancel
+            </Button>
+          </div>
+        </Modal>
       </main>
     </React.Fragment>
   );
