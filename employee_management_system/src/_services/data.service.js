@@ -13,6 +13,7 @@ export const dataService = {
   getSalary,
   deleteEmployee,
   deleteDepartment,
+  getUsers,
 };
 
 axios.interceptors.response.use(
@@ -38,6 +39,17 @@ axios.interceptors.response.use(
     } catch {}
   }
 );
+
+function getUsers() {
+  return axios({
+    url: "/managers",
+    method: "GET",
+    headers: { "x-access-token": authenticationService.currentUserValue.token },
+    ...config,
+  }).then((response) => {
+    return response.data;
+  });
+}
 
 let config = {
   baseURL: "http://127.0.0.1:5000/",

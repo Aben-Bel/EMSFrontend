@@ -14,6 +14,7 @@ import {
   TableHead,
   Toolbar,
   TablePagination,
+  Button,
 } from "@material-ui/core";
 import { Search as SearchIcon } from "react-feather";
 
@@ -42,20 +43,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Employees() {
+export default function Users() {
   const classes = useStyles();
 
   const [rows, setRows] = useState([]);
-  const [filteredRows, setFilteredRows] = useState(rows);
+  const [filteredRows, setFilteredRows] = useState([]);
   const history = useHistory();
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
 
   useEffect(() => {
-    dataService.getEmployees().then((data) => {
+    dataService.getUsers().then((data) => {
       setRows(data);
       setFilteredRows(data);
-      console.log("employees:: ", data);
     });
   }, []);
 
@@ -63,12 +63,7 @@ export default function Employees() {
     e.preventDefault();
     const val = e.target.value.toLowerCase();
     setFilteredRows(
-      rows.filter(
-        (row) =>
-          row.first_name.toLowerCase().includes(val) ||
-          row.last_name.toLowerCase().includes(val) ||
-          (row.first_name + " " + row.last_name).toLowerCase().includes(val)
-      )
+      rows.filter((row) => row.username.toLowerCase().includes(val))
     );
   }
 
@@ -82,8 +77,9 @@ export default function Employees() {
 
   function openDetail(data, action) {
     data.action = action;
+    console.log("go to user");
     history.push({
-      pathname: "/Employee",
+      pathname: "/user",
       state: {
         key: data,
       },
@@ -93,7 +89,7 @@ export default function Employees() {
   return (
     <React.Fragment>
       <Toolbar>
-        <h1>Employee</h1>
+        <h1>ADMIN</h1>
         <div className={classes.grow} />
 
         <Fab
@@ -103,7 +99,7 @@ export default function Employees() {
           variant="extended"
         >
           <AddIcon className={classes.extendedIcon} />
-          Add new employee
+          Add new Admin
         </Fab>
       </Toolbar>
 
@@ -129,24 +125,18 @@ export default function Employees() {
         <TableHead>
           <TableRow>
             <TableCell className={classes.white}>Profile</TableCell>
-            <TableCell className={classes.white}>Frist Name</TableCell>
-            <TableCell className={classes.white}>Second Name</TableCell>
-            <TableCell className={classes.white}>Date of Birth</TableCell>
-            <TableCell className={classes.white}>Department</TableCell>
-            <TableCell className={classes.white}>Hourly Rate</TableCell>
+            <TableCell className={classes.white}>Username</TableCell>
+            <TableCell className={classes.white}>Role</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {filteredRows.slice(page * limit, page * limit + limit).map((row) => (
-            <TableRow key={row.id} onClick={() => openDetail(row, "Save")}>
+            <TableRow key={row?.id} onClick={() => openDetail(row, "Save")}>
               <TableCell>
-                <Avatar>{row.first_name.charAt(0)}</Avatar>
+                <Avatar>{row.username.charAt(0)}</Avatar>
               </TableCell>
-              <TableCell>{row.first_name}</TableCell>
-              <TableCell>{row.last_name}</TableCell>
-              <TableCell>{row.date_of_birth}</TableCell>
-              <TableCell>{row.department_title}</TableCell>
-              <TableCell>{row.hourly_rate}</TableCell>
+              <TableCell>{row.username}</TableCell>
+              <TableCell>{row.user_role}</TableCell>
             </TableRow>
           ))}
         </TableBody>

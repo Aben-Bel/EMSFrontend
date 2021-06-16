@@ -75,7 +75,7 @@ function App() {
                 />
               );
             }
-            if (user.role === Role.User) {
+            if (user.role === Role.Manager) {
               return (
                 <Redirect
                   to={{ pathname: "/hr", state: { from: history.location } }}
@@ -102,7 +102,7 @@ function App() {
           component={AdminPage}
         />
 
-        <PrivateRoute path="/hr" roles={[Role.User]} component={HRPage} />
+        <PrivateRoute path="/hr" roles={[Role.Manager]} component={HRPage} />
         <Route path={["/login"]} component={LoginPage} />
       </div>
     </Router>

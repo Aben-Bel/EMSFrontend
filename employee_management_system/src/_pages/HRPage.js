@@ -32,7 +32,7 @@ function HRPage() {
   return (
     <Router>
       <Layout
-        dashboard="Admin"
+        dashboard="HR"
         content={
           <Switch>
             <Route exact path="/employees">

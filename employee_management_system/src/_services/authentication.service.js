@@ -44,6 +44,7 @@ function login(username, password) {
     const user = {
       username: response.username,
       password: response.password,
+      role: response.role,
       token: response.token,
     };
 
