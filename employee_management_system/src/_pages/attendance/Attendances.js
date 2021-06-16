@@ -87,6 +87,7 @@ export default function Attendance(props) {
 
   function handleOnSubmit(value, setStatus) {
     console.log("Attendance: ", value);
+    value.employeeId = value.employeeId.split("-")[0];
     dataService
       .addAttendance(value)
       .then((res) => {
