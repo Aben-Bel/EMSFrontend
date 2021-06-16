@@ -14,6 +14,13 @@ export const dataService = {
   deleteEmployee,
   deleteDepartment,
   getUsers,
+  addUser,
+  editUser,
+  deleteUser,
+};
+
+let config = {
+  baseURL: "http://127.0.0.1:5000/",
 };
 
 axios.interceptors.response.use(
@@ -51,9 +58,48 @@ function getUsers() {
   });
 }
 
-let config = {
-  baseURL: "http://127.0.0.1:5000/",
-};
+function editUser({ username, password, id }) {
+  return axios({
+    url: `/managers/${id}`,
+    method: "PUT",
+    headers: { "x-access-token": authenticationService.currentUserValue.token },
+    data: {
+      username,
+      password,
+      user_role: "manager",
+    },
+    ...config,
+  }).then((response) => {
+    return response;
+  });
+}
+
+function addUser({ username, password }) {
+  return axios({
+    url: "/managers",
+    method: "POST",
+    headers: { "x-access-token": authenticationService.currentUserValue.token },
+    data: {
+      username,
+      password,
+      role: "manager",
+    },
+    ...config,
+  }).then((response) => {
+    return response;
+  });
+}
+
+function deleteUser(id) {
+  return axios({
+    url: `/managers/${id}`,
+    method: "DELETE",
+    headers: { "x-access-token": authenticationService.currentUserValue.token },
+    ...config,
+  }).then((response) => {
+    return response;
+  });
+}
 
 function getEmployees() {
   return axios({

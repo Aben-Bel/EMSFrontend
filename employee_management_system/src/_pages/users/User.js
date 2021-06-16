@@ -115,7 +115,6 @@ export default function User(props) {
               onSubmit={(values, { setStatus }) => {
                 console.log("values user: ", values);
                 if (user.action === "Create") {
-                  values.departmentId = values.departmentId.split("-")[0];
                   dataService
                     .addUser(values)
                     .then((res) => {
@@ -135,7 +134,6 @@ export default function User(props) {
                       });
                     });
                 } else if (user.action === "Save") {
-                  values.departmentId = values.departmentId.split("-")[0];
                   values.id = user.id;
                   dataService
                     .editUser(values)
