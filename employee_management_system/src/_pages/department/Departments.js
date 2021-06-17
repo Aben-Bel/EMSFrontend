@@ -67,11 +67,7 @@ export default function Departments() {
     console.log("query: ", e.target.value);
     const val = e.target.value.toLowerCase();
     setFilteredRows(
-      rows.filter(
-        (row) =>
-          row.depTitle.toLowerCase().includes(val) ||
-          row.numEmployees.toLowerCase().includes(val)
-      )
+      rows.filter((row) => row.department_title?.toLowerCase().includes(val))
     );
   }
 
