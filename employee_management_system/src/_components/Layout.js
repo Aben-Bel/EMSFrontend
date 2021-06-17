@@ -17,16 +17,13 @@ function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {"Copyright © "}
-      <Link color="inherit" href="https://material-ui.com/">
-        Your Website
-      </Link>{" "}
-      {new Date().getFullYear()}
+      <Link color="inherit">Your Website</Link> {new Date().getFullYear()}
       {"."}
     </Typography>
   );
 }
 
-const drawerWidth = 240;
+const drawerWidth = 220;
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -91,6 +88,7 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     height: "100vh",
     overflow: "auto",
+    marginLeft: drawerWidth,
   },
   container: {
     paddingTop: 0,
@@ -101,7 +99,7 @@ const useStyles = makeStyles((theme) => ({
     widht: "100%",
   },
   paper: {
-    padding: theme.spacing(2),
+    padding: theme.spacing(3),
     display: "flex",
     overflow: "auto",
     flexDirection: "column",

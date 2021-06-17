@@ -14,11 +14,6 @@ export function LoginPage(props) {
     <div className="jumbotron fullHeigth">
       <div className="container ">
         <div className="col-md-6 offset-md-3">
-          <div className="alert alert-info">
-            <strong>Normal User</strong> - U: user P: user
-            <br />
-            <strong>Administrator</strong> - U: admin P: admin
-          </div>
           <h2>Login</h2>
           <Formik
             initialValues={{
