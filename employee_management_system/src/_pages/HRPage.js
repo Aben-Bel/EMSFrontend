@@ -82,7 +82,7 @@ function HRPage() {
                 <ListItemIcon>
                   <LibraryAddCheckIcon />
                 </ListItemIcon>
-                <ListItemText primary="Attendance" />
+                <ListItemText primary="Hours Worked" />
               </ListItem>
             </Link>
 

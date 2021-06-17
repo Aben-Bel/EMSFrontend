@@ -114,15 +114,15 @@ export default function Department(props) {
                     .addDepartment(values)
                     .then((res) => {
                       console.log("response status: ", res);
-                      if (res.status === 201) {
+                      if (res?.status === 200) {
                         setStatus({
                           sent: true,
-                          msg: "Sucessfully Added Employee",
+                          msg: "Sucessfully Added Depatment",
                         });
                       }
                     })
                     .catch((err) => {
-                      console.log("was here to report an error employee");
+                      console.log("was here to report an error department");
                       setStatus({
                         sent: false,
                         msg: `${err}. Please try again later.`,
@@ -134,15 +134,15 @@ export default function Department(props) {
                     .editDepartment(values)
                     .then((res) => {
                       console.log("response status: ", res);
-                      if (res.status === 201) {
+                      if (res?.status === 201) {
                         setStatus({
                           sent: true,
-                          msg: "Sucessfully Added Employee",
+                          msg: "Sucessfully Added Department",
                         });
                       }
                     })
                     .catch((err) => {
-                      console.log("was here to report an error employee");
+                      console.log("was here to report an error department");
                       setStatus({
                         sent: false,
                         msg: `${err}. Please try again later.`,
@@ -255,7 +255,8 @@ export default function Department(props) {
               color="secondary"
               onClick={() => {
                 setOpen(false);
-                history.push("/departments");
+                // history.push("/departments");
+                history.go(1);
                 handleDelete();
               }}
               className={classes.button}

@@ -25,6 +25,10 @@ let config = {
 
 axios.interceptors.response.use(
   function (response) {
+    if ([400, 404, 409].indexOf(response.status) !== -1) {
+      throw new Error()
+    }
+
     return response;
   },
   function (error) {
@@ -74,7 +78,7 @@ function editUser({ username, password, role, id }) {
   });
 }
 
-function addUser({ username, password }) {
+function addUser({ username, password, role }) {
   return axios({
     url: "/managers",
     method: "POST",
@@ -82,7 +86,7 @@ function addUser({ username, password }) {
     data: {
       username,
       password,
-      role: "manager",
+      user_role: role,
     },
     ...config,
   }).then((response) => {

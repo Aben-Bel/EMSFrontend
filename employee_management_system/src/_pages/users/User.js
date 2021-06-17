@@ -95,7 +95,8 @@ export default function User(props) {
         .deleteUser(user.id)
         .then((res) => {
           console.log("Deleted: ", res);
-          history.push("/users");
+          // history.push("/users");
+          history.go(1);
         })
         .catch((error) => {});
     }
@@ -208,7 +209,7 @@ export default function User(props) {
                           <Button
                             color="secondary"
                             onClick={() => {
-                              history.push("/users");
+                              history.push("/users")
                             }}
                             className={classes.button}
                           >
@@ -271,6 +272,7 @@ export default function User(props) {
               onClick={() => {
                 setOpen(false);
                 history.push("/users");
+                history.go(1);
                 handleDelete();
               }}
               className={classes.button}
@@ -281,6 +283,8 @@ export default function User(props) {
               color="secondary"
               onClick={() => {
                 setOpen(false);
+                
+                
               }}
               className={classes.button}
             >

@@ -115,7 +115,7 @@ export default function Employee(props) {
           console.log("Deleted: ", res);
           history.push("/employees");
         })
-        .catch((error) => {});
+        .catch((error) => { });
     }
   };
 
@@ -144,7 +144,7 @@ export default function Employee(props) {
                     .addEmployee(values)
                     .then((res) => {
                       console.log("response status: ", res);
-                      if (res.status === 201) {
+                      if (res?.status === 201) {
                         setStatus({
                           sent: true,
                           msg: "Sucessfully Added Employee",
@@ -165,7 +165,7 @@ export default function Employee(props) {
                     .editEmployee(values)
                     .then((res) => {
                       console.log("response status: ", res);
-                      if (res.status === 201) {
+                      if (res?.status === 201) {
                         setStatus({
                           sent: true,
                           msg: "Sucessfully Added Employee",
@@ -305,9 +305,8 @@ export default function Employee(props) {
                   </Grid>
                   {status && status.msg && (
                     <p
-                      className={`alert ${
-                        status.sent ? "alert-success" : "alert-error"
-                      }`}
+                      className={`alert ${status.sent ? "alert-success" : "alert-error"
+                        }`}
                     >
                       {status.msg}
                     </p>
@@ -346,7 +345,8 @@ export default function Employee(props) {
               color="secondary"
               onClick={() => {
                 setOpen(false);
-                history.push("/employees");
+                // history.push("/employees");
+                history.go(1);
                 handleDelete();
               }}
               className={classes.button}

@@ -64,21 +64,24 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+var d = new Date(); 
+d.setDate(d.getDate() - 1);
+
 const FORM_VALIDATION = Yup.object().shape({
   employeeId: Yup.string().required("Required"),
   amount: Yup.number()
-    .typeError("Must be a positive number")
-    .required("Required")
-    .positive("Amount must be positive"),
+    // .typeError("Must be a positive number")
+    .required("Required"),
+  // .positive("Amount must be positive"),
   date: Yup.date()
     .typeError("It must be a date")
-    .test("Date", "Only date after today are accepted ", (value) => {
-      return moment(new Date(value)).isAfter(
-        moment().utc(new Date()).format("L")
-      );
-    })
+    // .test("Date", "Only date after today are accepted ", (value) => {
+    //   return moment(new Date(value)).isAfter(
+    //     moment().utc(d).format("L")
+    //   );
+    // })
     .required("Required"),
-  remark: Yup.string().min(30).max(200).required("required"),
+  remark: Yup.string().min(10).max(200).required("required"),
 });
 export default function BonusCuts(props) {
   const classes = useStyles();
@@ -239,9 +242,8 @@ export default function BonusCuts(props) {
                   </Grid>
                   {status && status.msg && (
                     <p
-                      className={`alert ${
-                        status.sent ? "alert-success" : "alert-error"
-                      }`}
+                      className={`alert ${status.sent ? "alert-success" : "alert-error"
+                        }`}
                     >
                       {status.msg}
                     </p>
