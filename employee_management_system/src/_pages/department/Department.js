@@ -137,7 +137,7 @@ export default function Department(props) {
                       if (res?.status === 201) {
                         setStatus({
                           sent: true,
-                          msg: "Sucessfully Added Department",
+                          msg: "Sucessfully Edited Department",
                         });
                       }
                     })

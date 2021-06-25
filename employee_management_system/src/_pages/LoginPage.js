@@ -1,104 +1,128 @@
 import React from "react";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import Avatar from "@material-ui/core/Avatar";
+import Button from "@material-ui/core/Button";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import TextField from "@material-ui/core/TextField";
+import Link from "@material-ui/core/Link";
+import Grid from "@material-ui/core/Grid";
+import Box from "@material-ui/core/Box";
+import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
+import Typography from "@material-ui/core/Typography";
+import { makeStyles } from "@material-ui/core/styles";
+import Container from "@material-ui/core/Container";
 
 import { authenticationService } from "../_services/authentication.service";
+
+function Copyright() {
+  return (
+    <Typography variant="body2" color="textSecondary" align="center">
+      {"Copyright © "}
+      <Link color="inherit" href="#">
+        EMS
+      </Link>{" "}
+      {new Date().getFullYear()}
+      {"."}
+    </Typography>
+  );
+}
+
+const useStyles = makeStyles((theme) => ({
+  paper: {
+    marginTop: theme.spacing(8),
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
+  avatar: {
+    margin: theme.spacing(1),
+    backgroundColor: theme.palette.secondary.main,
+  },
+  form: {
+    width: "100%", // Fix IE 11 issue.
+    marginTop: theme.spacing(1),
+  },
+  submit: {
+    margin: theme.spacing(3, 0, 2),
+  },
+}));
 
 export function LoginPage(props) {
   // redirect to home if already logged in
   if (authenticationService.currentUserValue) {
     props.history.push("/");
+
   }
+  const classes = useStyles();
+
+  function login(e) {
+    e.preventDefault();
+    const username = e.target.elements["username"].value;
+    const password = e.target.elements["password"].value;
+    authenticationService.login(username, password);
+  }
+
+
 
   return (
     <div className="jumbotron fullHeigth">
-      <div className="container ">
-        <div className="col-md-6 offset-md-3">
-          <h2>Login</h2>
-          <Formik
-            initialValues={{
-              username: "",
-              password: "",
-            }}
-            validationSchema={Yup.object().shape({
-              username: Yup.string().required("Username is required"),
-              password: Yup.string().required("Password is required"),
-            })}
-            onSubmit={(
-              { username, password },
-              { setStatus, setSubmitting }
-            ) => {
-              setStatus();
-              setSubmitting(true);
-              authenticationService.login(username, password).then(
-                (user) => {
-                  console.log("user: ", user);
-                  setStatus({ msg: "Loggin in..." });
-                  const { from } = props.location.state || {
-                    from: { pathname: "/" },
-                  };
-                  props.history.push(from);
-                },
-                (error) => {
-                  console.log("error: ", error);
-                  setSubmitting(false);
-                  setStatus(error.ErrorMessage);
-                }
-              );
-            }}
-          >
-            {(errors, touched, isSubmitting, status) => (
-              <Form>
-                <div className="form-group">
-                  <label htmlFor="username">Username</label>
-                  <Field
-                    name="username"
-                    type="text"
-                    className={
-                      "form-control" +
-                      (errors.username && touched.username ? " is-invalid" : "")
-                    }
-                  />
-                  <ErrorMessage
-                    name="username"
-                    component="div"
-                    className="invalid-feedback"
-                  />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="password">Password</label>
-                  <Field
-                    name="password"
-                    type="password"
-                    className={
-                      "form-control" +
-                      (errors.password && touched.password ? " is-invalid" : "")
-                    }
-                  />
-                  <ErrorMessage
-                    name="password"
-                    component="div"
-                    className="invalid-feedback"
-                  />
-                </div>
-                <div className="form-group">
-                  <button
-                    type="submit"
-                    className="btn btn-primary"
-                    disabled={isSubmitting}
-                  >
-                    Login
-                  </button>
-                  {isSubmitting && (
-                    <img src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
-                  )}
-                </div>
-                {status && <div className={"alert alert-danger"}>{status}</div>}
-              </Form>
-            )}
-          </Formik>
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <div className={classes.paper}>
+          <Avatar className={classes.avatar}>
+            <LockOutlinedIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Sign in
+          </Typography>
+          <form className={classes.form} onSubmit={login}>
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              id="username"
+              label="Username"
+              name="username"
+              autoComplete="username"
+              autoFocus
+            />
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              id="password"
+              autoComplete="current-password"
+            />
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              className={classes.submit}
+            >
+              Sign In
+            </Button>
+            {/* <Grid container>
+              <Grid item>
+                <Link href="/register" variant="body2">
+                  {"Don't have an account? Sign Up"}
+                </Link>
+              </Grid>
+            </Grid> */}
+          </form>
         </div>
-      </div>
+
+        <Box mt={8}>
+          <Copyright />
+        </Box>
+      </Container>
+
     </div>
   );
 }

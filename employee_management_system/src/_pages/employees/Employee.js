@@ -168,7 +168,7 @@ export default function Employee(props) {
                       if (res?.status === 201) {
                         setStatus({
                           sent: true,
-                          msg: "Sucessfully Added Employee",
+                          msg: "Sucessfully Edited Employee",
                         });
                       }
                     })

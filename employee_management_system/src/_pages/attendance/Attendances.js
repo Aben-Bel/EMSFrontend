@@ -95,7 +95,7 @@ export default function Attendance(props) {
         if (res.status === 201) {
           setStatus({
             sent: true,
-            msg: "Sucessfully Added Attendance",
+            msg: "Sucessfully Added Hours Worked",
           });
         }
       })

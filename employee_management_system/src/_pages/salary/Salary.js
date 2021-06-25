@@ -90,7 +90,7 @@ export default function Salary(props) {
         <Paper className={classes.paper}>
           <React.Fragment>
             <Typography variant="h6" gutterBottom>
-              Record Employee worked hours
+              Record Employee Salary
             </Typography>
             <Formik
               initialValues={{ ...INITIAL_FROM_STATE }}
@@ -195,7 +195,7 @@ export default function Salary(props) {
                           }}
                           className={classes.button}
                         >
-                          Calculate Salary
+                          Make Payment
                         </ButtonWrapper>
                       </div>
                     </Grid>

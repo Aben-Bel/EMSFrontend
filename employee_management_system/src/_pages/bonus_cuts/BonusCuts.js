@@ -111,7 +111,7 @@ export default function BonusCuts(props) {
         if (res.status === 201) {
           setStatus({
             sent: true,
-            msg: "Sucessfully Added Bonus",
+            msg: "Sucessfully Added Bonus/Cuts",
           });
         }
       })
@@ -129,7 +129,7 @@ export default function BonusCuts(props) {
         <Paper className={classes.paper}>
           <React.Fragment>
             <Typography variant="h6" gutterBottom>
-              Record Employee worked hours
+              Record Employee Bonus or Cuts
             </Typography>
             <Formik
               initialValues={{ ...INITIAL_FROM_STATE }}

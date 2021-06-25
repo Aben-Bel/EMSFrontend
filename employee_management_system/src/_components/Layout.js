@@ -139,6 +139,11 @@ function Layout(props) {
       <main className={classes.content}>
         <Container className={classes.container}>
           {props.content}
+          {/* {props.content===undefined && (
+            <div>
+              Hello
+            </div>
+          )} */}
           <Box pt={4}>
             <Copyright />
           </Box>
